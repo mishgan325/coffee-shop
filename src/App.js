@@ -1,25 +1,42 @@
-import logo from './logo.svg';
-import './App.css';
+import React, { useState } from 'react';
+import { BrowserRouter as Router, Route, Routes, Link } from 'react-router-dom';
+import CoffeeList from './components/CoffeeList';
+import Cart from './components/Cart';
+import Checkout from './components/Checkout';
 
-function App() {
+const App = () => {
+  const [cart, setCart] = useState([]);
+
+  const addToCart = (coffee) => {
+    setCart([...cart, coffee]);
+  };
+
+  const removeFromCart = (id) => {
+    setCart(cart.filter(item => item.id !== id));
+  };
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+      <Router>
+        <div>
+          <nav>
+            <div>
+              <Link to="/">Главная</Link>
+            </div>
+            <div>
+              <Link to="/cart">Корзина ({cart.length})</Link>
+            </div>
+          </nav>
+
+          <div className="container">
+            <Routes>
+              <Route path="/" element={<CoffeeList addToCart={addToCart} />} />
+              <Route path="/cart" element={<Cart cart={cart} removeFromCart={removeFromCart} />} />
+              <Route path="/checkout" element={<Checkout cart={cart} />} />
+            </Routes>
+          </div>
+        </div>
+      </Router>
   );
-}
+};
 
 export default App;

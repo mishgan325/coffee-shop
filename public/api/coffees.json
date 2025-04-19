@@ -1,0 +1,23 @@
+[
+  {
+    "id": 1,
+    "name": "Американо",
+    "description": "Классический черный кофе",
+    "price": 2.5,
+    "image": "/coffee.png"
+  },
+  {
+    "id": 2,
+    "name": "Капучино",
+    "description": "Кофе с молочной пеной",
+    "price": 3.0,
+    "image": "/coffee.png"
+  },
+  {
+    "id": 3,
+    "name": "Латте",
+    "description": "Кофе с молоком и пеной",
+    "price": 3.5,
+    "image": "/coffee.png"
+  }
+]
