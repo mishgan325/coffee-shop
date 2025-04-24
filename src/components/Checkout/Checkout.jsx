@@ -1,4 +1,5 @@
 import React from 'react';
+import './Checkout.css';
 
 const Checkout = ({ cart }) => {
     const handleCheckout = () => {

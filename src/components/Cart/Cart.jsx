@@ -1,4 +1,5 @@
 import React from 'react';
+import './Cart.css'; // Подключаем стиль
 
 const Cart = ({ cart, removeFromCart }) => {
     return (

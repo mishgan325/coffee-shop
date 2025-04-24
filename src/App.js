@@ -1,8 +1,8 @@
 import React, { useState } from 'react';
 import { HashRouter as Router, Route, Routes, Link } from 'react-router-dom';
-import CoffeeList from './components/CoffeeList';
-import Cart from './components/Cart';
-import Checkout from './components/Checkout';
+import CoffeeList from './components/CoffeeList/CoffeeList';
+import Cart from './components/Cart/Cart';
+import Checkout from './components/Checkout/Checkout';
 
 const App = () => {
   const [cart, setCart] = useState([]);
