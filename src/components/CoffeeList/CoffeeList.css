@@ -18,42 +18,68 @@
     justify-content: center;
 }
 
+
 .coffee-card {
     border: 1px solid #ddd;
-    border-radius: 12px;
-    padding: 1rem;
-    width: 240px;
+    border-radius: 16px;
+    padding: 1.5rem; /* Увеличенный паддинг */
+    width: 260px;
     text-align: center;
-    box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    background: #fff;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.coffee-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
 }
 
 .coffee-image {
     width: 100%;
     height: auto;
-    border-radius: 8px;
+    border-radius: 12px;
+    margin-bottom: 1rem;
 }
 
-.price {
-    font-weight: bold;
+.coffee-card h3 {
+    font-size: 1.4rem;
     margin: 0.5rem 0;
 }
 
+.coffee-card p {
+    color: #555;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
 .additives {
-    margin-top: 1rem;
+    margin: 1rem 0;
     text-align: left;
+}
+
+.additives h4 {
+    font-size: 1.1rem;
+    margin-bottom: 0.5rem;
 }
 
 .additives label {
     display: block;
     margin-bottom: 0.5rem;
+    font-size: 0.95rem;
 }
 
 .add-btn {
-    padding: 0.5rem 1rem;
-    border: none;
-    border-radius: 6px;
+    margin-top: auto;
+    padding: 0.7rem 1rem;
     background-color: #007bff;
     color: white;
+    border: none;
+    border-radius: 8px;
+    font-size: 1rem;
     cursor: pointer;
     transition: background-color 0.3s ease;
 }
@@ -61,3 +87,4 @@
 .add-btn:hover {
     background-color: #0056b3;
 }
+

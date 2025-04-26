@@ -6,6 +6,7 @@ const CoffeeList = ({ addToCart }) => {
     const [coffeeList, setCoffeeList] = useState([]);
 
     useEffect(() => {
+        // fetch('/api/coffees')
         fetch(`${process.env.PUBLIC_URL}/api/coffees.json`)
             .then((response) => response.json())
             .then((data) => {
@@ -23,7 +24,11 @@ const CoffeeList = ({ addToCart }) => {
                     <p>Загрузка...</p>
                 ) : (
                     coffeeList.map((coffee) => (
-                        <CoffeeCard key={coffee.id} coffee={coffee} />
+                        <CoffeeCard
+                            key={coffee.id}
+                            coffee={coffee}
+                            addToCart={addToCart} // вот этого не хватало
+                        />
                     ))
                 )}
             </div>
