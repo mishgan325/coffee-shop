@@ -1,68 +1,76 @@
 import React, { useState, useEffect } from 'react';
-import './MyOrders.css'; // Стиль для страницы "Мои заказы"
+import { fetchOrders } from '../../api/api'; // Импортируем функцию из api.js
 
-const MyOrders = () => {
+const MyOrders = ({ token }) => {
     const [orders, setOrders] = useState([]);
-    const [loading, setLoading] = useState(true);  // Статус загрузки
-    const [error, setError] = useState(null);      // Статус ошибки
+    const [loading, setLoading] = useState(true);
+    const [error, setError] = useState(null);
 
     useEffect(() => {
-        // fetch('/api/orders')
-        fetch(`${process.env.PUBLIC_URL}/api/orders.json`)
-            .then((response) => {
-                if (!response.ok) {
-                    throw new Error('Не удалось загрузить заказы');
-                }
-                return response.json();
-            })
-            .then((data) => {
+        if (!token) {
+            setError('Необходимо войти в систему');
+            setLoading(false);
+            return;
+        }
+
+        const loadOrders = async () => {
+            try {
+                const data = await fetchOrders(token); // Используем fetchOrders из api.js
                 setOrders(data);
-                setLoading(false);  // Завершаем загрузку
-            })
-            .catch((error) => {
+            } catch (error) {
                 setError(error.message);
-                setLoading(false);  // Завершаем загрузку даже при ошибке
-            });
-    }, []);
+            } finally {
+                setLoading(false);
+            }
+        };
+
+        loadOrders();
+    }, [token]);
 
     if (loading) {
-        return <div>Загрузка...</div>;  // Отображаем индикатор загрузки
+        return <div className="text-center mt-4">Загрузка...</div>;
     }
 
     if (error) {
-        return <div>Ошибка: {error}</div>;  // Показываем ошибку, если она произошла
+        return <div className="alert alert-danger mt-4 text-center">Ошибка: {error}</div>;
     }
 
     return (
-        <div className="orders-container">
-            <h2 className="orders-title">Мои заказы</h2>
+        <div className="container mt-4">
+            <h2 className="mb-4 text-center">Мои заказы</h2>
             {orders.length === 0 ? (
-                <p>У вас нет заказов.</p>
+                <p className="text-center">У вас нет заказов.</p>
             ) : (
-                <div className="orders-list">
-                    {orders.map((order, index) => (
-                        <div key={index} className="order-card">
-                            <h4>Заказ #{order.id}</h4>
-                            <p>Дата: {new Date(order.date).toLocaleDateString()}</p>
-                            <div className="order-items">
-                                {order.items.map((item, idx) => (
-                                    <div key={idx} className="order-item">
-                                        <h5>{item.name}</h5>
-                                        <p>Цена: ${item.price}</p>
-                                        {item.additives?.length > 0 && (
-                                            <div className="order-additives">
-                                                <p>Добавки:</p>
-                                                <ul>
-                                                    {item.additives.map((additive) => (
-                                                        <li key={additive.id}>{additive.name}</li>
-                                                    ))}
-                                                </ul>
-                                            </div>
-                                        )}
-                                    </div>
-                                ))}
+                <div className="row row-cols-1 g-4">
+                    {orders.map((order) => (
+                        <div key={order.id} className="col">
+                            <div className="card shadow-sm">
+                                <div className="card-body">
+                                    <h5 className="card-title">Заказ #{order.id}</h5>
+                                    <p className="card-subtitle text-muted mb-2">
+                                        Дата: {new Date(order.date).toLocaleDateString()}
+                                    </p>
+
+                                    {order.items.map((item, idx) => (
+                                        <div key={idx} className="mb-2 border-bottom pb-2">
+                                            <h6>{item.name}</h6>
+                                            <p className="mb-1">Цена: ${item.price}</p>
+                                            {item.additives?.length > 0 && (
+                                                <div>
+                                                    <strong>Добавки:</strong>
+                                                    <ul className="mb-0">
+                                                        {item.additives.map((additive) => (
+                                                            <li key={additive.id}>{additive.name}</li>
+                                                        ))}
+                                                    </ul>
+                                                </div>
+                                            )}
+                                        </div>
+                                    ))}
+
+                                    <p className="fw-bold mt-3">Итог: ${order.total}</p>
+                                </div>
                             </div>
-                            <p className="order-total">Итог: ${order.total}</p>
                         </div>
                     ))}
                 </div>
