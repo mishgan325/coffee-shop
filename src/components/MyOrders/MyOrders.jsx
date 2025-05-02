@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react';
-import { fetchOrders } from '../../api/api'; // Импортируем функцию из api.js
+import { fetchOrders } from '../../api/api';
+import OrderItem from './OrderItem';
+import { FaRegCalendarAlt, FaMoneyBillWave } from 'react-icons/fa';
 
 const MyOrders = ({ token }) => {
     const [orders, setOrders] = useState([]);
@@ -15,7 +17,7 @@ const MyOrders = ({ token }) => {
 
         const loadOrders = async () => {
             try {
-                const data = await fetchOrders(token); // Используем fetchOrders из api.js
+                const data = await fetchOrders(token);
                 setOrders(data);
             } catch (error) {
                 setError(error.message);
@@ -28,7 +30,12 @@ const MyOrders = ({ token }) => {
     }, [token]);
 
     if (loading) {
-        return <div className="text-center mt-4">Загрузка...</div>;
+        return (
+            <div className="text-center mt-5">
+                <div className="spinner-border text-primary" role="status" />
+                <p className="mt-3">Загрузка заказов...</p>
+            </div>
+        );
     }
 
     if (error) {
@@ -37,38 +44,32 @@ const MyOrders = ({ token }) => {
 
     return (
         <div className="container mt-4">
-            <h2 className="mb-4 text-center">Мои заказы</h2>
+            <h2 className="mb-4 text-center">🧾 Мои заказы</h2>
             {orders.length === 0 ? (
-                <p className="text-center">У вас нет заказов.</p>
+                <p className="text-center text-muted">У вас пока нет заказов ☹️</p>
             ) : (
                 <div className="row row-cols-1 g-4">
                     {orders.map((order) => (
                         <div key={order.id} className="col">
-                            <div className="card shadow-sm">
+                            <div className="card border-light shadow-sm">
+                                <div className="card-header bg-white fw-bold">
+                                    Заказ #{order.id}
+                                </div>
                                 <div className="card-body">
-                                    <h5 className="card-title">Заказ #{order.id}</h5>
-                                    <p className="card-subtitle text-muted mb-2">
-                                        Дата: {new Date(order.date).toLocaleDateString()}
-                                    </p>
+                                    <div className="d-flex justify-content-between text-muted mb-3">
+                                        <span>
+                                            <FaRegCalendarAlt className="me-1" />
+                                            {new Date(order.created_at).toLocaleDateString()}
+                                        </span>
+                                        <span>
+                                            <FaMoneyBillWave className="me-1" />
+                                            {order.total_price} ₽
+                                        </span>
+                                    </div>
 
                                     {order.items.map((item, idx) => (
-                                        <div key={idx} className="mb-2 border-bottom pb-2">
-                                            <h6>{item.name}</h6>
-                                            <p className="mb-1">Цена: ${item.price}</p>
-                                            {item.additives?.length > 0 && (
-                                                <div>
-                                                    <strong>Добавки:</strong>
-                                                    <ul className="mb-0">
-                                                        {item.additives.map((additive) => (
-                                                            <li key={additive.id}>{additive.name}</li>
-                                                        ))}
-                                                    </ul>
-                                                </div>
-                                            )}
-                                        </div>
+                                        <OrderItem key={idx} {...item} />
                                     ))}
-
-                                    <p className="fw-bold mt-3">Итог: ${order.total}</p>
                                 </div>
                             </div>
                         </div>
