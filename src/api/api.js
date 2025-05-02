@@ -37,7 +37,7 @@ export const loginUser = (credentials) => request('/api/users/login', 'POST', cr
 
 export const fetchCoffees = (telegramToken) => request('/api/coffees', 'POST', {telegram_token: telegramToken});
 
-export const createCoffee = (coffeeData, token) => request('/api/coffees', 'POST', coffeeData, token);
+export const createCoffee = (coffeeData, token) => request('/api/coffees', 'POST', coffeeData);
 
 export const deleteCoffee = (coffeeId, token) => request(`/api/coffees/${coffeeId}`, 'DELETE', null);
 
@@ -46,7 +46,7 @@ export const deleteCoffee = (coffeeId, token) => request(`/api/coffees/${coffeeI
 export const fetchAddons = (telegramToken) => request('/api/addons', 'POST', {telegram_token: telegramToken});
 
 // Передача токена в теле запроса
-export const createAddon = (addonData, token) => request('/api/addons', 'POST', addonData, token);
+export const createAddon = (addonData, token) => request('/api/addons', 'POST', addonData);
 
 export const deleteAddon = (addonId, token) => request(`/api/addons/${addonId}`, 'DELETE', null);
 
@@ -54,10 +54,10 @@ export const deleteAddon = (addonId, token) => request(`/api/addons/${addonId}`,
 
 export const fetchOrders = (telegramToken) => request('/api/users/me/orders', 'POST', {telegram_token: telegramToken});
 
-export const fetchAllOrders = (token) => request('/api/orders', 'GET', null, token);
+export const fetchAllOrders = (token) => request('/api/orders', 'GET', null);
 
-export const createOrder = (orderData) => request('/api/orders', 'POST', orderData);
+export const createOrder = (items, telegramToken) => request('/api/orders', 'POST', {items, telegram_token: telegramToken});
 
-export const createUserOrder = (orderData) => request('/api/users/me/orders', 'POST', orderData);
+// export const createUserOrder = (orderData) => request('/api/users/me/orders', 'POST', orderData);
 
 export const deleteOrder = (orderId) => request(`/api/orders/${orderId}`, 'DELETE', null);
