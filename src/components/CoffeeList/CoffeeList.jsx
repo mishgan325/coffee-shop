@@ -23,26 +23,24 @@ const CoffeeList = ({ addToCart, token }) => {
         loadCoffees();
     }, [token]);
 
-    if (!token) {
-        return <p className="text-center text-danger">Ошибка: пользователь не авторизован</p>;
-    }
-
     return (
         <div className="container py-4">
-            <h2 className="mb-4 text-center">Наш кофе</h2>
+            <h2 className="text-center mb-4">☕ Наш кофе</h2>
+
             {loading ? (
-                <p className="text-center">Загрузка...</p>
+                <div className="d-flex justify-content-center align-items-center" style={{ minHeight: '200px' }}>
+                    <div className="spinner-border text-primary" role="status" />
+                    <span className="ms-3">Загружаем аромат...</span>
+                </div>
+            ) : coffeeList.length === 0 ? (
+                <div className="text-center text-muted fs-5 mt-5">Нет доступного кофе 😞</div>
             ) : (
-                <div className="row row-cols-1 row-cols-md-2 row-cols-lg-3 g-4">
-                    {coffeeList.length === 0 ? (
-                        <p className="text-center">Нет кофе для отображения</p>
-                    ) : (
-                        coffeeList.map((coffee) => (
-                            <div className="col" key={coffee.id}>
-                                <CoffeeCard coffee={coffee} addToCart={addToCart} />
-                            </div>
-                        ))
-                    )}
+                <div className="row g-4">
+                    {coffeeList.map((coffee) => (
+                        <div className="col-12 col-sm-6 col-lg-4" key={coffee.id || coffee.name}>
+                            <CoffeeCard coffee={coffee} addToCart={addToCart} />
+                        </div>
+                    ))}
                 </div>
             )}
         </div>
