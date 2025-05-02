@@ -24,7 +24,7 @@ const App = () => {
     }, []);
 
     const addToCart = (coffee) => setCart([...cart, coffee]);
-    const removeFromCart = (id) => setCart(cart.filter(item => item.id !== id));
+    const removeFromCart = (cartItemId) => setCart(cart.filter(item => item.cartItemId !== cartItemId));
 
     return (
         <Router>
@@ -33,7 +33,7 @@ const App = () => {
                 <div className="container">
                     <Routes>
                         <Route path="/" element={<CoffeeList addToCart={addToCart} token={token} />} />
-                        <Route path="/cart" element={<Cart cart={cart} removeFromCart={removeFromCart} setCart={setCart} />} />
+                        <Route path="/cart" element={<Cart cart={cart} removeFromCart={removeFromCart} setCart={setCart} token={token}/>} />
                         <Route path="/orders" element={<MyOrders token={token} />} />
                         <Route path="*" element={<Navigate to="/" />} />
                     </Routes>
