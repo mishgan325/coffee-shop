@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from 'react';
-import { fetchOrders } from '../../api/api';
+import { fetchMyOrders } from '../../api/api';
 import OrderItem from './OrderItem';
 import { FaRegCalendarAlt, FaMoneyBillWave } from 'react-icons/fa';
 
@@ -17,7 +17,7 @@ const MyOrders = ({ token }) => {
 
         const loadOrders = async () => {
             try {
-                const data = await fetchOrders(token);
+                const data = await fetchMyOrders(token);
                 setOrders(data);
             } catch (error) {
                 setError(error.message);
