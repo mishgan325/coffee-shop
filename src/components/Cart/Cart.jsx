@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { createOrder, fetchAddons } from '../../api/api';
-import 'bootstrap/dist/css/bootstrap.min.css';
 import CartItem from './CartItem';
 
 const Cart = ({ cart, removeFromCart, setCart, token }) => {
@@ -29,7 +28,7 @@ const Cart = ({ cart, removeFromCart, setCart, token }) => {
 
             const updatedAdditives = exists
                 ? selected.filter(a => a.id !== additive.id)
-                : [...selected, additive];
+                : [...selected, { ...additive, id: additive.id ?? additive.addon_id }];
 
             return { ...item, selectedAdditives: updatedAdditives };
         });
@@ -56,34 +55,34 @@ const Cart = ({ cart, removeFromCart, setCart, token }) => {
         }
     };
 
-
-    console.log(cart);
+    const totalPrice = cart.reduce((total, item) => {
+        const additivePrice = (item.selectedAdditives || []).reduce((sum, a) => sum + a.price, 0);
+        return total + item.price + additivePrice;
+    }, 0);
 
     return (
         <div className="container my-4">
-            <h2 className="mb-4">Корзина</h2>
+            <h2 className="mb-4 text-center">Корзина</h2>
             {cart.length === 0 ? (
-                <div className="alert alert-info">Корзина пуста</div>
+                <div className="alert alert-info text-center">Ваша корзина пуста</div>
             ) : (
                 <>
-                    <div className="row g-3">
+                    <div className="row g-4">
                         {cart.map((item) => (
                             <CartItem
                                 key={item.cartItemId}
                                 item={item}
                                 addons={addons}
                                 toggleAdditive={toggleAdditive}
-                                removeFromCart={() => removeFromCart(item.cartItemId)}
+                                removeFromCart={removeFromCart}
                             />
                         ))}
                     </div>
 
-                    <div className="d-flex justify-content-between align-items-center mt-4">
-                        <h5>
-                            Общая стоимость: ${cart.reduce((total, item) => total + item.price, 0)}
-                        </h5>
-                        <button className="btn btn-success" onClick={handleOrder}>
-                            Заказать
+                    <div className="d-flex justify-content-between align-items-center mt-4 p-3 border-top">
+                        <h5 className="mb-0">Итого: {totalPrice} ₽</h5>
+                        <button className="btn btn-success px-4 rounded-pill" onClick={handleOrder}>
+                            Оформить заказ
                         </button>
                     </div>
                 </>
