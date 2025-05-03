@@ -1,12 +1,18 @@
 const API_URL = process.env.REACT_APP_API_URL;
 
-const request = async (url, method = 'GET', body = null) => {
+const request = async (url, method = 'GET', body = null, token = null) => {
     const headers = {
         'Content-Type': 'application/json',
     };
 
+    // Если есть токен для авторизации, добавляем его в заголовки
+    if (token) {
+        headers['Authorization'] = `Basic ${token}`;
+    }
+
     const config = {
-        method, headers,
+        method,
+        headers,
     };
 
     if (body) {
@@ -29,35 +35,43 @@ const request = async (url, method = 'GET', body = null) => {
     }
 };
 
-// === USERS ===
+// === BASIC USER ===
+
+// USERS
 
 export const loginUser = (credentials) => request('/api/users/login', 'POST', credentials);
 
-// === COFFEES ===
+// COFFEES
 
 export const fetchCoffees = (telegramToken) => request('/api/coffees', 'POST', {telegram_token: telegramToken});
 
-export const createCoffee = (coffeeData, token) => request('/api/coffees', 'POST', coffeeData);
-
-export const deleteCoffee = (coffeeId, token) => request(`/api/coffees/${coffeeId}`, 'DELETE', null);
-
-// === ADDONS ===
+// ADDONS
 
 export const fetchAddons = (telegramToken) => request('/api/addons', 'POST', {telegram_token: telegramToken});
 
-// Передача токена в теле запроса
-export const createAddon = (addonData, token) => request('/api/addons', 'POST', addonData);
+// ORDERS
 
-export const deleteAddon = (addonId, token) => request(`/api/addons/${addonId}`, 'DELETE', null);
-
-// === ORDERS ===
-
-export const fetchOrders = (telegramToken) => request('/api/users/me/orders', 'POST', {telegram_token: telegramToken});
-
-export const fetchAllOrders = (token) => request('/api/orders', 'GET', null);
+export const fetchMyOrders = (telegramToken) => request('/api/users/me/orders', 'POST', {telegram_token: telegramToken});
 
 export const createOrder = (items, telegramToken) => request('/api/orders', 'POST', {items, telegram_token: telegramToken});
 
-// export const createUserOrder = (orderData) => request('/api/users/me/orders', 'POST', orderData);
 
-export const deleteOrder = (orderId) => request(`/api/orders/${orderId}`, 'DELETE', null);
+// === ADMIN USER ===
+
+// COFFEE
+
+export const createCoffee = (coffeeData, token) => request('/api/coffees', 'POST', coffeeData, token);
+
+export const deleteCoffee = (coffeeId, token) => request(`/api/coffees/${coffeeId}`, 'DELETE', null, token);
+
+// ADDONS
+
+export const createAddon = (addonData, token) => request('/api/addons', 'POST', addonData, token);
+
+export const deleteAddon = (addonId, token) => request(`/api/addons/${addonId}`, 'DELETE', null, token);
+
+// ORDERS
+
+export const fetchAllOrders = (token) => request('/api/orders', 'GET', null, token);
+
+export const deleteOrder = (orderId, token) => request(`/api/orders/${orderId}`, 'DELETE', null, token);

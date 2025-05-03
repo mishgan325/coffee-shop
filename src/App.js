@@ -5,6 +5,7 @@ import Cart from './components/Cart/Cart';
 import MyOrders from './components/MyOrders/MyOrders';
 import Navbar from './components/Navbar/Navbar';
 import { loginUser } from './api/api';
+import AdminPanel from "./pages/AdminPanel/AdminPanel";
 
 const App = () => {
     const [cart, setCart] = useState([]);
@@ -29,12 +30,13 @@ const App = () => {
     return (
         <Router>
             <div>
-                <Navbar cartCount={cart.length} />
+                <Navbar cartCount={cart.length} token={token}/>
                 <div className="container">
                     <Routes>
                         <Route path="/" element={<CoffeeList addToCart={addToCart} token={token} />} />
                         <Route path="/cart" element={<Cart cart={cart} removeFromCart={removeFromCart} setCart={setCart} token={token}/>} />
                         <Route path="/orders" element={<MyOrders token={token} />} />
+                        <Route path="/admin" element={<AdminPanel />} /> {/* Добавляем путь для админ-панели */}
                         <Route path="*" element={<Navigate to="/" />} />
                     </Routes>
                 </div>
