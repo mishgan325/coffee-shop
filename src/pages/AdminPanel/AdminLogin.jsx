@@ -12,11 +12,7 @@ const AdminLogin = ({ onLogin }) => {
         setError(null);
 
         try {
-            if (username === 'admin' && password === 'password') {
-                onLogin(); // Успешный вход
-            } else {
-                throw new Error('Неверный логин или пароль');
-            }
+            onLogin(username, password); // Просто передаем логин и пароль в родительский компонент
         } catch (error) {
             setError(error.message);
         } finally {
@@ -25,9 +21,9 @@ const AdminLogin = ({ onLogin }) => {
     };
 
     return (
-        <div className="d-flex justify-content-center align-items-center vh-100">
-            <div className="card p-4" style={{ width: '300px' }}>
-                <h3 className="text-center mb-4">Вход для администратора</h3>
+        <div className="d-flex justify-content-center align-items-center vh-100 bg-light">
+            <div className="card shadow p-4 rounded" style={{ width: '320px' }}>
+                <h3 className="text-center mb-4">Вход администратора</h3>
                 <form onSubmit={handleLogin}>
                     <div className="mb-3">
                         <label htmlFor="username" className="form-label">Логин</label>
