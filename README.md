@@ -41,7 +41,7 @@ cd coffee-shop
 
 Создайте .env в корне проекта 
 ```
-REACT_APP_API_URL=https://<ваш_ip_адрес или localhost>:<порт для бэкенда>
+REACT_APP_API_URL=https://<ip_адрес>:<порт_для_бэкенда>
 ```
 ### Установить npm
 
