@@ -1,8 +1,17 @@
 import React from 'react';
 
-const AdminAddonForm = ({ onSubmit, loading, addonName, setAddonName, addonPrice, setAddonPrice }) => (
+const AdminAddonForm = ({
+                            onSubmit,
+                            loading,
+                            addonName,
+                            setAddonName,
+                            addonPrice,
+                            setAddonPrice,
+                            isEditing,
+                            onCancelEdit
+                        }) => (
     <div className="mb-4">
-        <h3 className="mb-3">Добавление добавки</h3>
+        <h3 className="mb-3">{isEditing ? 'Редактирование добавки' : 'Добавление добавки'}</h3>
         <form onSubmit={onSubmit}>
             <div className="mb-3">
                 <input
@@ -24,9 +33,16 @@ const AdminAddonForm = ({ onSubmit, loading, addonName, setAddonName, addonPrice
                     required
                 />
             </div>
-            <button type="submit" className="btn btn-primary" disabled={loading}>
-                {loading ? 'Добавление...' : 'Добавить добавку'}
-            </button>
+            <div className="d-flex gap-2">
+                <button type="submit" className="btn btn-primary" disabled={loading}>
+                    {loading ? 'Сохранение...' : isEditing ? 'Сохранить' : 'Добавить добавку'}
+                </button>
+                {isEditing && (
+                    <button type="button" className="btn btn-outline-secondary" onClick={onCancelEdit}>
+                        Отмена
+                    </button>
+                )}
+            </div>
         </form>
     </div>
 );
