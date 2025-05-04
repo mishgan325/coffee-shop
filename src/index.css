@@ -8,3 +8,231 @@
 .navbar-brand {
   font-family: 'LEPKA', sans-serif;
 }
+
+:root {
+  --coffee-bg: #F5E4C8;
+  --coffee-dark: #4B2E2B;
+  --coffee-cream: #FDF6EB;
+  --coffee-panel: #D6A77A;
+  --coffee-text: #3B2B29;
+  --coffee-border-color: #3B2B29;
+
+  /* Bootstrap основные цвета */
+  --bs-body-bg: var(--coffee-bg);
+  --bs-body-color: var(--coffee-text);
+  --bs-primary: var(--coffee-dark);
+  --bs-secondary: var(--coffee-panel);
+  --bs-light: var(--coffee-cream);
+  --bs-dark: #2C1D1A;
+  --bs-link-color: var(--coffee-dark);
+  --bs-link-hover-color: #2C1D1A;
+  --bs-border-color: #CBBBA0;
+
+  /* Цвета для кнопок */
+  --btn-primary-bg: var(--coffee-dark);
+  --btn-primary-border: var(--coffee-dark);
+  --btn-primary-hover-bg: #2C1D1A;
+  --btn-primary-hover-border: #2C1D1A;
+  --btn-primary-active-bg: #2C1D1A;
+  --btn-primary-active-border: #2C1D1A;
+
+  --btn-secondary-bg: var(--coffee-panel);
+  --btn-secondary-border: var(--coffee-panel);
+  --btn-secondary-hover-bg: #B68960;
+  --btn-secondary-hover-border: #B68960;
+  --btn-secondary-active-bg: #B68960;
+  --btn-secondary-active-border: #B68960;
+
+  --btn-light-bg: var(--coffee-cream);
+  --btn-light-border: var(--coffee-cream);
+  --btn-light-hover-bg: #F1E0C6;
+  --btn-light-hover-border: #F1E0C6;
+  --btn-light-active-bg: #F1E0C6;
+  --btn-light-active-border: #F1E0C6;
+
+  --btn-outline-primary-color: var(--coffee-dark);
+  --btn-outline-primary-border: var(--coffee-dark);
+  --btn-outline-primary-hover-bg: var(--coffee-dark);
+  --btn-outline-primary-hover-color: var(--coffee-cream);
+  --btn-outline-primary-hover-border: var(--coffee-dark);
+
+  --btn-outline-secondary-color: var(--coffee-panel);
+  --btn-outline-secondary-border: var(--coffee-panel);
+  --btn-outline-secondary-hover-bg: var(--coffee-panel);
+  --btn-outline-secondary-hover-color: var(--coffee-cream);
+  --btn-outline-secondary-hover-border: var(--coffee-panel);
+}
+
+
+/* Navbar стили */
+.navbar-coffee {
+  background-color: var(--coffee-dark) !important;
+}
+
+.navbar-coffee .navbar-brand,
+.navbar-coffee .nav-link,
+.navbar-coffee .navbar-toggler-icon {
+  color: var(--coffee-cream) !important;
+}
+
+.navbar-coffee .nav-link:hover {
+  color: var(--coffee-panel) !important;
+}
+
+.navbar-coffee .navbar-toggler {
+  border-color: var(--coffee-cream);
+}
+
+/* Кастомные стили для кнопок */
+/* Кастомные стили для кнопок */
+.btn-primary {
+  background-color: var(--coffee-dark);
+  border-color: var(--coffee-dark);
+}
+
+.btn-primary:hover {
+  background-color: #2C1D1A;
+  border-color: #2C1D1A;
+}
+
+.btn-primary:active {
+  background-color: #2C1D1A;
+  border-color: #2C1D1A;
+  box-shadow: none; /* Убираем стандартную тень при нажатии */
+}
+
+.btn-secondary {
+  background-color: var(--coffee-panel);
+  border-color: var(--coffee-panel);
+}
+
+.btn-secondary:hover {
+  background-color: #B68960;
+  border-color: #B68960;
+}
+
+.btn-secondary:active {
+  background-color: #B68960;
+  border-color: #B68960;
+  box-shadow: none;
+}
+
+.btn-light {
+  background-color: var(--coffee-cream);
+  border-color: var(--coffee-cream);
+  color: var(--coffee-text);
+}
+
+.btn-light:hover {
+  background-color: #F1E0C6;
+  border-color: #F1E0C6;
+}
+
+.btn-light:active {
+  background-color: #F1E0C6;
+  border-color: #F1E0C6;
+  box-shadow: none;
+}
+
+.btn-outline-primary {
+  color: var(--coffee-dark);
+  border-color: var(--coffee-dark);
+}
+
+.btn-outline-primary:hover {
+  background-color: var(--coffee-dark);
+  color: var(--coffee-cream);
+  border-color: var(--coffee-dark);
+}
+
+.btn-outline-primary:active {
+  background-color: var(--coffee-dark);
+  color: var(--coffee-cream);
+  border-color: var(--coffee-dark);
+  box-shadow: none;
+}
+
+.btn-outline-secondary {
+  color: var(--coffee-panel);
+  border-color: var(--coffee-panel);
+}
+
+.btn-outline-secondary:hover {
+  background-color: var(--coffee-panel);
+  color: var(--coffee-cream);
+  border-color: var(--coffee-panel);
+}
+
+.btn-outline-secondary:active {
+  background-color: var(--coffee-panel);
+  color: var(--coffee-cream);
+  border-color: var(--coffee-panel);
+  box-shadow: none;
+}
+
+/* Фоновые стили для карточек и других компонентов */
+.card {
+  border-color: var(--coffee-border-color);
+}
+
+.card-header {
+  background-color: var(--coffee-panel);
+  color: var(--coffee-text);
+}
+
+.card-body {
+  background-color: var(--coffee-cream);
+  color: var(--coffee-text);
+}
+
+.card-footer {
+  background-color: var(--coffee-dark);
+  color: var(--coffee-cream);
+}
+
+/* Общее оформление текста и ссылок */
+body {
+  background-color: var(--coffee-bg);
+  color: var(--coffee-text);
+}
+
+a {
+  color: var(--coffee-dark);
+  text-decoration: none;
+}
+
+a:hover {
+  color: var(--coffee-panel);
+  text-decoration: underline;
+}
+
+/* Кастомизация выпадающих меню и других элементов */
+.dropdown-menu {
+  background-color: var(--coffee-bg);
+  border-color: var(--coffee-border-color);
+}
+
+.dropdown-item {
+  color: var(--coffee-text);
+}
+
+.dropdown-item:hover {
+  background-color: var(--coffee-panel);
+  color: var(--coffee-cream);
+}
+
+/* Кастомизация модальных окон */
+.modal-content {
+  background-color: var(--coffee-cream);
+  color: var(--coffee-text);
+}
+
+.modal-header {
+  background-color: var(--coffee-panel);
+  color: var(--coffee-text);
+}
+
+.modal-footer {
+  background-color: var(--coffee-dark);
+  color: var(--coffee-cream);
+}
