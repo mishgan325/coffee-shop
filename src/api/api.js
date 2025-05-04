@@ -5,7 +5,6 @@ const request = async (url, method = 'GET', body = null, basicAuthToken = null) 
         'Content-Type': 'application/json',
     };
 
-    // Если есть токен для авторизации, добавляем его в заголовки
     if (basicAuthToken) {
         headers['Authorization'] = basicAuthToken;
     }
@@ -22,11 +21,20 @@ const request = async (url, method = 'GET', body = null, basicAuthToken = null) 
     try {
         console.log(`[${method}] ${url}`, body);
         const response = await fetch(`${API_URL}${url}`, config);
-        const data = await response.json();
+
+        // Проверка на наличие тела ответа
+        const contentType = response.headers.get('content-type');
+        let data = null;
+
+        if (contentType && contentType.includes('application/json')) {
+            data = await response.json();
+        }
 
         console.log(`[${method}] Ответ от сервера:`, data);
 
-        if (!response.ok) throw new Error(data?.message || 'Ошибка запроса');
+        if (!response.ok) {
+            throw new Error(data?.message || `Ошибка запроса: ${response.status}`);
+        }
 
         return data;
     } catch (error) {
@@ -72,7 +80,7 @@ export const deleteCoffee = (coffeeId, basicAuthToken) => request(`/admin/coffee
 
 export const getAllAddons = (basicAuthToken) => request('/admin/addons', 'GET', null, basicAuthToken);
 
-export const updateAddon = (addonId, addonData, basicAuthToken) => request(`/admin/adddons/${addonId}`, 'PUT', addonData, basicAuthToken);
+export const updateAddon = (addonId, addonData, basicAuthToken) => request(`/admin/addons/${addonId}`, 'PUT', addonData, basicAuthToken);
 
 export const createAddon = (addonData, basicAuthToken) => request('/admin/addons', 'POST', addonData, basicAuthToken);
 
@@ -80,6 +88,6 @@ export const deleteAddon = (addonId, basicAuthToken) => request(`/admin/addons/$
 
 // ORDERS
 
-export const getAllOrders = (basicAuthToken) => request('/admin/orders', 'POST', null, basicAuthToken);
+export const getAllOrders = (basicAuthToken) => request('/admin/orders', 'GET', null, basicAuthToken);
 
 export const deleteOrder = (orderId, basicAuthToken) => request(`/admin/orders/${orderId}`, 'DELETE', null, basicAuthToken);
