@@ -1,13 +1,13 @@
 const API_URL = process.env.REACT_APP_API_URL;
 
-const request = async (url, method = 'GET', body = null, token = null) => {
+const request = async (url, method = 'GET', body = null, basicAuthToken = null) => {
     const headers = {
         'Content-Type': 'application/json',
     };
 
     // Если есть токен для авторизации, добавляем его в заголовки
-    if (token) {
-        headers['Authorization'] = `Basic ${token}`;
+    if (basicAuthToken) {
+        headers['Authorization'] = basicAuthToken;
     }
 
     const config = {
@@ -60,18 +60,26 @@ export const createOrder = (items, telegramToken) => request('/api/orders', 'POS
 
 // COFFEE
 
-export const createCoffee = (coffeeData, token) => request('/api/coffees', 'POST', coffeeData, token);
+export const getAllCoffees = (basicAuthToken) => request('/admin/coffees', 'GET', null, basicAuthToken);
 
-export const deleteCoffee = (coffeeId, token) => request(`/api/coffees/${coffeeId}`, 'DELETE', null, token);
+export const updateCoffee = (coffeeId, coffeeData, basicAuthToken) => request(`/admin/coffees/${coffeeId}`, 'PUT', coffeeData, basicAuthToken);
+
+export const createCoffee = (coffeeData, basicAuthToken) => request('/admin/coffees', 'POST', coffeeData, basicAuthToken);
+
+export const deleteCoffee = (coffeeId, basicAuthToken) => request(`/admin/coffees/${coffeeId}`, 'DELETE', null, basicAuthToken);
 
 // ADDONS
 
-export const createAddon = (addonData, token) => request('/api/addons', 'POST', addonData, token);
+export const getAllAddons = (basicAuthToken) => request('/admin/addons', 'GET', null, basicAuthToken);
 
-export const deleteAddon = (addonId, token) => request(`/api/addons/${addonId}`, 'DELETE', null, token);
+export const updateAddon = (addonId, addonData, basicAuthToken) => request(`/admin/adddons/${addonId}`, 'PUT', addonData, basicAuthToken);
+
+export const createAddon = (addonData, basicAuthToken) => request('/admin/addons', 'POST', addonData, basicAuthToken);
+
+export const deleteAddon = (addonId, basicAuthToken) => request(`/admin/addons/${addonId}`, 'DELETE', null, basicAuthToken);
 
 // ORDERS
 
-export const fetchAllOrders = (token) => request('/api/orders', 'GET', null, token);
+export const getAllOrders = (basicAuthToken) => request('/admin/orders', 'POST', null, basicAuthToken);
 
-export const deleteOrder = (orderId, token) => request(`/api/orders/${orderId}`, 'DELETE', null, token);
+export const deleteOrder = (orderId, basicAuthToken) => request(`/admin/orders/${orderId}`, 'DELETE', null, basicAuthToken);
