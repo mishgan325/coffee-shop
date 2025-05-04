@@ -241,9 +241,9 @@ const AdminPanel = () => {
     }
 
     return (
-        <div className="container mt-4">
+        <div className="container mt-4 admin-panel-container admin-panel">
             <h2>Админ-панель</h2>
-            <ul className="nav nav-tabs mb-4" style={{borderBottom: '2px solid #dee2e6'}}>
+            <ul className="nav nav-tabs mb-4">
                 <li className="nav-item">
                     <button
                         className={`nav-link ${activeTab === 'coffees' ? 'active bg-primary text-white' : ''}`}
