@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
     createCoffee, deleteCoffee, fetchCoffees,
     createAddon, deleteAddon, fetchAddons,
-    createOrder, deleteOrder, getAllOrders, getAllCoffees, getAllAddons, updateCoffee
+    createOrder, deleteOrder, getAllOrders, getAllCoffees, getAllAddons, updateCoffee, updateAddon
 } from '../../api/api';
 
 import AdminCoffeeForm from './AdminCoffeeForm';
@@ -14,6 +14,7 @@ import AdminOrderList from './AdminOrderList';
 
 const AdminPanel = () => {
     const [activeTab, setActiveTab] = useState('coffees');
+
     const [coffees, setCoffees] = useState([]);
     const [addons, setAddons] = useState([]);
     const [orders, setOrders] = useState([]);
@@ -27,6 +28,8 @@ const AdminPanel = () => {
 
     const [addonName, setAddonName] = useState('');
     const [addonPrice, setAddonPrice] = useState('');
+    const [editingAddon, setEditingAddon] = useState(null);
+
 
     const [login, setLogin] = useState('');
     const [password, setPassword] = useState('');
@@ -82,26 +85,6 @@ const AdminPanel = () => {
         }
     };
 
-    const handleAddCoffee = async (e) => {
-        e.preventDefault();
-        const coffeeData = {
-            name: coffeeName,
-            description: coffeeDescription,
-            price: parseFloat(coffeePrice),
-            imageUrl: coffeeImageUrl,
-        };
-        try {
-            setLoading(true);
-            await createCoffee(coffeeData, token);
-            setMessage('Кофе успешно добавлено!');
-            loadCoffees();
-        } catch (error) {
-            setMessage(`Ошибка при добавлении кофе: ${error.message}`);
-        } finally {
-            setLoading(false);
-        }
-    };
-
     const handleEditCoffee = (coffee) => {
         setCoffeeName(coffee.name);
         setCoffeeDescription(coffee.description);
@@ -150,7 +133,6 @@ const AdminPanel = () => {
         }
     };
 
-
     const handleDeleteCoffee = async (coffeeId) => {
         try {
             setLoading(true);
@@ -163,6 +145,49 @@ const AdminPanel = () => {
             setLoading(false);
         }
     };
+
+    // ==ADDONS==
+
+    const handleSubmitAddon = async (e) => {
+        e.preventDefault();
+        const addonData = {
+            name: addonName,
+            price: parseFloat(addonPrice),
+        };
+        try {
+            setLoading(true);
+            if (editingAddon) {
+                await updateAddon(editingAddon.addon_id, addonData, token);
+                setMessage('Добавка обновлена!');
+            } else {
+                await createAddon(addonData, token);
+                setMessage('Добавка успешно добавлена!');
+            }
+            clearAddonForm();
+            loadAddons();
+        } catch (error) {
+            setMessage(`Ошибка: ${error.message}`);
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleEditAddon = (addon) => {
+        setAddonName(addon.name);
+        setAddonPrice(addon.price.toString());
+        setEditingAddon(addon);
+    };
+
+    const handleCancelEditAddon = () => {
+        clearAddonForm();
+    };
+
+    const clearAddonForm = () => {
+        setAddonName('');
+        setAddonPrice('');
+        setEditingAddon(null);
+    };
+
 
     const handleAddAddon = async (e) => {
         e.preventDefault();
@@ -191,6 +216,9 @@ const AdminPanel = () => {
             setLoading(false);
         }
     };
+
+
+
 
     const handleCreateOrder = async (e) => {
         e.preventDefault();
@@ -313,14 +341,20 @@ const AdminPanel = () => {
             {activeTab === 'addons' && (
                 <>
                     <AdminAddonForm
-                        onSubmit={handleAddAddon}
+                        onSubmit={handleSubmitAddon}
                         loading={loading}
                         addonName={addonName}
                         setAddonName={setAddonName}
                         addonPrice={addonPrice}
                         setAddonPrice={setAddonPrice}
+                        isEditing={!!editingAddon}
+                        onCancelEdit={handleCancelEditAddon}
                     />
-                    <AdminAddonList addons={addons} onDelete={handleDeleteAddon} />
+                    <AdminAddonList
+                        addons={addons}
+                        onDelete={handleDeleteAddon}
+                        onEdit={handleEditAddon}
+                    />
                 </>
             )}
 
