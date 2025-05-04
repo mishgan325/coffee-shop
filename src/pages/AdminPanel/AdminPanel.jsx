@@ -1,15 +1,20 @@
-import React, { useState, useEffect } from 'react';
+import React, {useEffect, useState} from 'react';
 import {
-    createCoffee, deleteCoffee, fetchCoffees,
-    createAddon, deleteAddon, fetchAddons,
-    createOrder, deleteOrder, getAllOrders, getAllCoffees, getAllAddons, updateCoffee, updateAddon
+    createAddon,
+    createCoffee,
+    deleteAddon,
+    deleteCoffee,
+    getAllAddons,
+    getAllCoffees,
+    getAllOrders,
+    updateAddon,
+    updateCoffee
 } from '../../api/api';
 
 import AdminCoffeeForm from './AdminCoffeeForm';
 import AdminCoffeeList from './AdminCoffeeList';
 import AdminAddonForm from './AdminAddonForm';
 import AdminAddonList from './AdminAddonList';
-import AdminOrderForm from './AdminOrderForm';
 import AdminOrderList from './AdminOrderList';
 
 const AdminPanel = () => {
@@ -38,14 +43,6 @@ const AdminPanel = () => {
 
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);
-
-    useEffect(() => {
-        if (isLoggedIn) {
-            loadCoffees();
-            loadAddons();
-            loadOrders();
-        }
-    }, [isLoggedIn]);
 
     const generateBasicAuthToken = (username, password) => {
         return 'Basic ' + btoa(username + ':' + password);
@@ -188,22 +185,6 @@ const AdminPanel = () => {
         setEditingAddon(null);
     };
 
-
-    const handleAddAddon = async (e) => {
-        e.preventDefault();
-        const addonData = { name: addonName, price: parseFloat(addonPrice) };
-        try {
-            setLoading(true);
-            await createAddon(addonData, token);
-            setMessage('Добавка успешно добавлена!');
-            loadAddons();
-        } catch (error) {
-            setMessage(`Ошибка при добавлении добавки: ${error.message}`);
-        } finally {
-            setLoading(false);
-        }
-    };
-
     const handleDeleteAddon = async (addonId) => {
         try {
             setLoading(true);
@@ -217,40 +198,18 @@ const AdminPanel = () => {
         }
     };
 
-
-
-
-    const handleCreateOrder = async (e) => {
-        e.preventDefault();
-        const items = []; // Пример
-        try {
-            setLoading(true);
-            await createOrder(items, token);
-            setMessage('Заказ успешно создан!');
+    useEffect(() => {
+        if (isLoggedIn) {
+            loadCoffees();
+            loadAddons();
             loadOrders();
-        } catch (error) {
-            setMessage(`Ошибка при создании заказа: ${error.message}`);
-        } finally {
-            setLoading(false);
         }
-    };
+    }, [isLoggedIn]);
 
-    const handleDeleteOrder = async (orderId) => {
-        try {
-            setLoading(true);
-            await deleteOrder(orderId, token);
-            setMessage('Заказ удален!');
-            loadOrders();
-        } catch (error) {
-            setMessage(`Ошибка при удалении заказа: ${error.message}`);
-        } finally {
-            setLoading(false);
-        }
-    };
 
     if (!isLoggedIn) {
         return (
-            <div className="container mt-5" style={{ maxWidth: '400px' }}>
+            <div className="container mt-5" style={{maxWidth: '400px'}}>
                 <h3 className="mb-3">Вход в админ-панель</h3>
                 <form onSubmit={handleLogin}>
                     <div className="mb-3">
@@ -284,11 +243,11 @@ const AdminPanel = () => {
     return (
         <div className="container mt-4">
             <h2>Админ-панель</h2>
-            <ul className="nav nav-tabs mb-4" style={{ borderBottom: '2px solid #dee2e6' }}>
+            <ul className="nav nav-tabs mb-4" style={{borderBottom: '2px solid #dee2e6'}}>
                 <li className="nav-item">
                     <button
                         className={`nav-link ${activeTab === 'coffees' ? 'active bg-primary text-white' : ''}`}
-                        style={{ borderRadius: '0.5rem 0.5rem 0 0' }}
+                        style={{borderRadius: '0.5rem 0.5rem 0 0'}}
                         onClick={() => setActiveTab('coffees')}
                     >
                         ☕ Кофе
@@ -297,7 +256,7 @@ const AdminPanel = () => {
                 <li className="nav-item">
                     <button
                         className={`nav-link ${activeTab === 'addons' ? 'active bg-primary text-white' : ''}`}
-                        style={{ borderRadius: '0.5rem 0.5rem 0 0' }}
+                        style={{borderRadius: '0.5rem 0.5rem 0 0'}}
                         onClick={() => setActiveTab('addons')}
                     >
                         ➕ Добавки
@@ -306,7 +265,7 @@ const AdminPanel = () => {
                 <li className="nav-item">
                     <button
                         className={`nav-link ${activeTab === 'orders' ? 'active bg-primary text-dark' : ''}`}
-                        style={{ borderRadius: '0.5rem 0.5rem 0 0' }}
+                        style={{borderRadius: '0.5rem 0.5rem 0 0'}}
                         onClick={() => setActiveTab('orders')}
                     >
                         📦 Заказы
@@ -360,8 +319,7 @@ const AdminPanel = () => {
 
             {activeTab === 'orders' && (
                 <>
-                    <AdminOrderForm onSubmit={handleCreateOrder} loading={loading} />
-                    <AdminOrderList orders={orders} onDelete={handleDeleteOrder} />
+                    <AdminOrderList orders={orders}/>
                 </>
             )}
 

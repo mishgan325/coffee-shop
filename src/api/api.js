@@ -89,5 +89,3 @@ export const deleteAddon = (addonId, basicAuthToken) => request(`/admin/addons/$
 // ORDERS
 
 export const getAllOrders = (basicAuthToken) => request('/admin/orders', 'GET', null, basicAuthToken);
-
-export const deleteOrder = (orderId, basicAuthToken) => request(`/admin/orders/${orderId}`, 'DELETE', null, basicAuthToken);
