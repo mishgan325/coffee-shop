@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react';
 import {
     createCoffee, deleteCoffee, fetchCoffees,
     createAddon, deleteAddon, fetchAddons,
-    createOrder, deleteOrder, fetchAllOrders
+    createOrder, deleteOrder, getAllOrders, getAllCoffees, getAllAddons, updateCoffee
 } from '../../api/api';
 
 import AdminCoffeeForm from './AdminCoffeeForm';
@@ -13,29 +13,51 @@ import AdminOrderForm from './AdminOrderForm';
 import AdminOrderList from './AdminOrderList';
 
 const AdminPanel = () => {
+    const [activeTab, setActiveTab] = useState('coffees');
     const [coffees, setCoffees] = useState([]);
     const [addons, setAddons] = useState([]);
     const [orders, setOrders] = useState([]);
+
     const [coffeeName, setCoffeeName] = useState('');
     const [coffeeDescription, setCoffeeDescription] = useState('');
     const [coffeePrice, setCoffeePrice] = useState('');
     const [coffeeImageUrl, setCoffeeImageUrl] = useState('');
+    const [editingCoffee, setEditingCoffee] = useState(null);
+
+
     const [addonName, setAddonName] = useState('');
     const [addonPrice, setAddonPrice] = useState('');
+
+    const [login, setLogin] = useState('');
+    const [password, setPassword] = useState('');
+    const [token, setToken] = useState('');
+    const [isLoggedIn, setIsLoggedIn] = useState(false);
+
     const [message, setMessage] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const token = 'your_token'; // замените на реальный токен
-
     useEffect(() => {
-        loadCoffees();
-        loadAddons();
-        loadOrders();
-    }, []);
+        if (isLoggedIn) {
+            loadCoffees();
+            loadAddons();
+            loadOrders();
+        }
+    }, [isLoggedIn]);
+
+    const generateBasicAuthToken = (username, password) => {
+        return 'Basic ' + btoa(username + ':' + password);
+    };
+
+    const handleLogin = (e) => {
+        e.preventDefault();
+        const authToken = generateBasicAuthToken(login, password);
+        setToken(authToken);
+        setIsLoggedIn(true);
+    };
 
     const loadCoffees = async () => {
         try {
-            const data = await fetchCoffees(token);
+            const data = await getAllCoffees(token);
             setCoffees(data);
         } catch (error) {
             setMessage(`Ошибка загрузки кофе: ${error.message}`);
@@ -44,7 +66,7 @@ const AdminPanel = () => {
 
     const loadAddons = async () => {
         try {
-            const data = await fetchAddons(token);
+            const data = await getAllAddons(token);
             setAddons(data);
         } catch (error) {
             setMessage(`Ошибка загрузки добавок: ${error.message}`);
@@ -53,7 +75,7 @@ const AdminPanel = () => {
 
     const loadOrders = async () => {
         try {
-            const data = await fetchAllOrders(token);
+            const data = await getAllOrders(token);
             setOrders(data);
         } catch (error) {
             setMessage(`Ошибка загрузки заказов: ${error.message}`);
@@ -79,6 +101,55 @@ const AdminPanel = () => {
             setLoading(false);
         }
     };
+
+    const handleEditCoffee = (coffee) => {
+        setCoffeeName(coffee.name);
+        setCoffeeDescription(coffee.description);
+        setCoffeePrice(coffee.price.toString());
+        setCoffeeImageUrl(coffee.image_url);
+        setEditingCoffee(coffee);
+    };
+
+    const handleCancelEdit = () => {
+        clearForm();
+    };
+
+    const clearForm = () => {
+        setCoffeeName('');
+        setCoffeeDescription('');
+        setCoffeePrice('');
+        setCoffeeImageUrl('');
+        setEditingCoffee(null);
+    };
+
+
+    const handleSubmitCoffee = async (e) => {
+        e.preventDefault();
+        const coffeeData = {
+            name: coffeeName,
+            description: coffeeDescription,
+            price: parseFloat(coffeePrice),
+            imageUrl: coffeeImageUrl,
+        };
+
+        try {
+            setLoading(true);
+            if (editingCoffee) {
+                await updateCoffee(editingCoffee.coffee_id, coffeeData, token);
+                setMessage('Кофе обновлено!');
+            } else {
+                await createCoffee(coffeeData, token);
+                setMessage('Кофе успешно добавлено!');
+            }
+            clearForm();
+            loadCoffees();
+        } catch (error) {
+            setMessage(`Ошибка: ${error.message}`);
+        } finally {
+            setLoading(false);
+        }
+    };
+
 
     const handleDeleteCoffee = async (coffeeId) => {
         try {
@@ -123,7 +194,7 @@ const AdminPanel = () => {
 
     const handleCreateOrder = async (e) => {
         e.preventDefault();
-        const items = []; // Пример. Заменить на реальные данные, если нужно
+        const items = []; // Пример
         try {
             setLoading(true);
             await createOrder(items, token);
@@ -149,53 +220,118 @@ const AdminPanel = () => {
         }
     };
 
+    if (!isLoggedIn) {
+        return (
+            <div className="container mt-5" style={{ maxWidth: '400px' }}>
+                <h3 className="mb-3">Вход в админ-панель</h3>
+                <form onSubmit={handleLogin}>
+                    <div className="mb-3">
+                        <label htmlFor="login" className="form-label">Логин</label>
+                        <input
+                            type="text"
+                            className="form-control"
+                            id="login"
+                            value={login}
+                            onChange={(e) => setLogin(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <div className="mb-3">
+                        <label htmlFor="password" className="form-label">Пароль</label>
+                        <input
+                            type="password"
+                            className="form-control"
+                            id="password"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
+                            required
+                        />
+                    </div>
+                    <button type="submit" className="btn btn-primary w-100">Войти</button>
+                </form>
+            </div>
+        );
+    }
+
     return (
-        <div>
+        <div className="container mt-4">
             <h2>Админ-панель</h2>
+            <ul className="nav nav-tabs mb-4" style={{ borderBottom: '2px solid #dee2e6' }}>
+                <li className="nav-item">
+                    <button
+                        className={`nav-link ${activeTab === 'coffees' ? 'active bg-primary text-white' : ''}`}
+                        style={{ borderRadius: '0.5rem 0.5rem 0 0' }}
+                        onClick={() => setActiveTab('coffees')}
+                    >
+                        ☕ Кофе
+                    </button>
+                </li>
+                <li className="nav-item">
+                    <button
+                        className={`nav-link ${activeTab === 'addons' ? 'active bg-primary text-white' : ''}`}
+                        style={{ borderRadius: '0.5rem 0.5rem 0 0' }}
+                        onClick={() => setActiveTab('addons')}
+                    >
+                        ➕ Добавки
+                    </button>
+                </li>
+                <li className="nav-item">
+                    <button
+                        className={`nav-link ${activeTab === 'orders' ? 'active bg-primary text-dark' : ''}`}
+                        style={{ borderRadius: '0.5rem 0.5rem 0 0' }}
+                        onClick={() => setActiveTab('orders')}
+                    >
+                        📦 Заказы
+                    </button>
+                </li>
+            </ul>
 
-            <AdminCoffeeForm
-                onSubmit={handleAddCoffee}
-                loading={loading}
-                coffeeName={coffeeName}
-                setCoffeeName={setCoffeeName}
-                coffeeDescription={coffeeDescription}
-                setCoffeeDescription={setCoffeeDescription}
-                coffeePrice={coffeePrice}
-                setCoffeePrice={setCoffeePrice}
-                coffeeImageUrl={coffeeImageUrl}
-                setCoffeeImageUrl={setCoffeeImageUrl}
-            />
+            {activeTab === 'coffees' && (
+                <>
+                    <AdminCoffeeForm
+                        onSubmit={handleSubmitCoffee}
+                        loading={loading}
+                        coffeeName={coffeeName}
+                        setCoffeeName={setCoffeeName}
+                        coffeeDescription={coffeeDescription}
+                        setCoffeeDescription={setCoffeeDescription}
+                        coffeePrice={coffeePrice}
+                        setCoffeePrice={setCoffeePrice}
+                        coffeeImageUrl={coffeeImageUrl}
+                        setCoffeeImageUrl={setCoffeeImageUrl}
+                        isEditing={!!editingCoffee}
+                        onCancelEdit={handleCancelEdit}
+                    />
+                    <AdminCoffeeList
+                        coffees={coffees}
+                        onDelete={handleDeleteCoffee}
+                        onEdit={handleEditCoffee}
+                    />
+                </>
+            )}
 
-            <AdminCoffeeList
-                coffees={coffees}
-                onDelete={handleDeleteCoffee}
-            />
+            {activeTab === 'addons' && (
+                <>
+                    <AdminAddonForm
+                        onSubmit={handleAddAddon}
+                        loading={loading}
+                        addonName={addonName}
+                        setAddonName={setAddonName}
+                        addonPrice={addonPrice}
+                        setAddonPrice={setAddonPrice}
+                    />
+                    <AdminAddonList addons={addons} onDelete={handleDeleteAddon} />
+                </>
+            )}
 
-            <AdminAddonForm
-                onSubmit={handleAddAddon}
-                loading={loading}
-                addonName={addonName}
-                setAddonName={setAddonName}
-                addonPrice={addonPrice}
-                setAddonPrice={setAddonPrice}
-            />
+            {activeTab === 'orders' && (
+                <>
+                    <AdminOrderForm onSubmit={handleCreateOrder} loading={loading} />
+                    <AdminOrderList orders={orders} onDelete={handleDeleteOrder} />
+                </>
+            )}
 
-            <AdminAddonList
-                addons={addons}
-                onDelete={handleDeleteAddon}
-            />
-
-            <AdminOrderForm
-                onSubmit={handleCreateOrder}
-                loading={loading}
-            />
-
-            <AdminOrderList
-                orders={orders}
-                onDelete={handleDeleteOrder}
-            />
-
-            {message && <p>{message}</p>}
+            {message && <div className="alert alert-info mt-3">{message}</div>}
         </div>
     );
 };

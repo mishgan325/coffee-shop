@@ -10,10 +10,12 @@ const AdminCoffeeForm = ({
                              coffeePrice,
                              setCoffeePrice,
                              coffeeImageUrl,
-                             setCoffeeImageUrl
+                             setCoffeeImageUrl,
+                             isEditing,
+                             onCancelEdit
                          }) => (
     <div className="mb-4">
-        <h3 className="mb-3">Добавление кофе</h3>
+        <h3 className="mb-3">{isEditing ? 'Редактирование кофе' : 'Добавление кофе'}</h3>
         <form onSubmit={onSubmit}>
             <div className="mb-3">
                 <input
@@ -52,12 +54,18 @@ const AdminCoffeeForm = ({
                     value={coffeeImageUrl}
                     onChange={(e) => setCoffeeImageUrl(e.target.value)}
                     placeholder="Ссылка на изображение"
-                    required
                 />
             </div>
-            <button type="submit" className="btn btn-primary" disabled={loading}>
-                {loading ? 'Добавление...' : 'Добавить кофе'}
-            </button>
+            <div className="d-flex gap-2">
+                <button type="submit" className="btn btn-primary" disabled={loading}>
+                    {loading ? (isEditing ? 'Сохранение...' : 'Добавление...') : (isEditing ? 'Сохранить' : 'Добавить кофе')}
+                </button>
+                {isEditing && (
+                    <button type="button" className="btn btn-secondary" onClick={onCancelEdit}>
+                        Отмена
+                    </button>
+                )}
+            </div>
         </form>
     </div>
 );
